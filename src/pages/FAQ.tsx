@@ -43,8 +43,8 @@ const faqCategories = [
         answer: "Yes! Once you reach the minimum withdrawal threshold, you can request a payout to your linked bank account. Withdrawals typically process within 3-5 business days."
       },
       {
-        question: "What's the coin to cash conversion rate?",
-        answer: "Generally, 10 eco coins = $1 USD. The exact rate may vary slightly based on market conditions and withdrawal fees."
+        question: "How do EcoCoins work?",
+        answer: "EcoCoins are our marketplace currency. You earn EcoCoins by selling items and can use them to purchase from other sellers. The coin-based economy promotes sustainable trading within our community."
       }
     ]
   },

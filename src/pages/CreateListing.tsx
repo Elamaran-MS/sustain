@@ -17,12 +17,60 @@ const CreateListing = () => {
   const [aiSuggested, setAiSuggested] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [analyzingAI, setAnalyzingAI] = useState(false);
+  const [valuation, setValuation] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    category: '',
+    condition: '',
+    description: '',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const handleAISuggest = () => {
-    setAiSuggested(true);
+  const handleAISuggest = async () => {
+    if (!photos.length) {
+      toast({
+        title: "No photos",
+        description: "Please upload at least one photo first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setAnalyzingAI(true);
+    try {
+      const response = await supabase.functions.invoke('ai-valuation', {
+        body: {
+          imageUrl: photos[0],
+          title: formData.title || 'Product',
+          condition: formData.condition || 'good',
+          category: formData.category || 'general',
+          description: formData.description,
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to get AI valuation');
+      }
+
+      setValuation(response.data);
+      setAiSuggested(true);
+      toast({
+        title: "AI Analysis Complete",
+        description: "Product valuation has been generated",
+      });
+    } catch (error: any) {
+      console.error('AI valuation error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error.message || "Failed to analyze product. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzingAI(false);
+    }
   };
 
   const handlePhotoClick = () => {
@@ -168,13 +216,15 @@ const CreateListing = () => {
                   <Input 
                     id="title" 
                     placeholder="e.g., Vintage Canon Camera AE-1"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
-                    <Select>
+                    <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                       <SelectTrigger id="category">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
@@ -190,7 +240,7 @@ const CreateListing = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="condition">Condition</Label>
-                    <Select>
+                    <Select value={formData.condition} onValueChange={(value) => setFormData({ ...formData, condition: value })}>
                       <SelectTrigger id="condition">
                         <SelectValue placeholder="Select condition" />
                       </SelectTrigger>
@@ -210,7 +260,9 @@ const CreateListing = () => {
                   <Textarea 
                     id="description" 
                     placeholder="Describe your item in detail..."
-                    rows={6}
+                    className="min-h-32"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
                 </div>
 
@@ -251,9 +303,10 @@ const CreateListing = () => {
                     variant="outline" 
                     className="flex-1"
                     onClick={handleAISuggest}
+                    disabled={analyzingAI || !photos.length || !user}
                   >
                     <Bot className="mr-2 h-4 w-4" />
-                    Get AI Suggestions
+                    {analyzingAI ? "Analyzing..." : "Get AI Valuation"}
                   </Button>
                   <Button type="submit" className="flex-1">
                     <Upload className="mr-2 h-4 w-4" />
@@ -280,7 +333,7 @@ const CreateListing = () => {
                   <div className="rounded-lg border border-dashed border-border p-8 text-center">
                     <Bot className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                     <p className="text-sm text-muted-foreground">
-                      Add photos and click "Get AI Suggestions" to see pricing recommendations
+                      Upload photos and fill in details, then click "Get AI Valuation" for instant pricing and sustainability analysis
                     </p>
                   </div>
                 ) : (
@@ -291,33 +344,43 @@ const CreateListing = () => {
                           <div className="mb-1 text-sm text-muted-foreground">Suggested Price</div>
                           <div className="flex items-center gap-2">
                             <Coins className="h-5 w-5 text-primary" />
-                            <span className="text-2xl font-bold text-foreground">1,200</span>
+                            <span className="text-2xl font-bold text-foreground">{valuation?.ecoCoins || 450}</span>
                           </div>
-                          <div className="text-sm text-muted-foreground">≈ $120</div>
                         </div>
-                        <Badge variant="secondary">High Confidence</Badge>
+                        <Badge variant="secondary">AI Generated</Badge>
                       </div>
 
-                      <div className="rounded-lg border border-border p-4">
-                        <h4 className="mb-2 font-semibold text-foreground">AI Analysis</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>✓ Category: Electronics (Camera)</li>
-                          <li>✓ Condition Score: 85/100</li>
-                          <li>✓ Brand: Canon (Premium)</li>
-                          <li>✓ Market Demand: High</li>
-                        </ul>
-                      </div>
+                      {valuation?.justification && (
+                        <div className="rounded-lg border border-border p-4">
+                          <h4 className="mb-2 font-semibold text-foreground">AI Analysis</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {valuation.justification}
+                          </p>
+                        </div>
+                      )}
 
                       <div className="rounded-lg border border-border p-4">
-                        <h4 className="mb-2 font-semibold text-foreground">Suggested Description</h4>
-                        <p className="text-sm text-muted-foreground">
-                          "Vintage Canon AE-1 camera in excellent working condition. Classic 35mm SLR, perfect for film photography enthusiasts. Shows minimal signs of use with fully functional shutter and light meter."
-                        </p>
+                        <h4 className="mb-2 font-semibold text-foreground">Sustainability Impact</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Carbon Offset</span>
+                            <span className="font-medium text-primary">+{valuation?.carbonOffset || 12} kg CO₂</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Waste Reduction</span>
+                            <span className="font-medium text-primary">{valuation?.wasteReduction || 'High'}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <Button variant="outline" className="w-full">
-                      Accept Suggestions
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={handleAISuggest}
+                      disabled={analyzingAI}
+                    >
+                      Regenerate Analysis
                     </Button>
                   </>
                 )}
