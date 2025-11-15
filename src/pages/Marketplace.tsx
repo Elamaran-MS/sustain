@@ -159,9 +159,6 @@ const Marketplace = () => {
                       <Coins className="h-5 w-5" />
                       {listing.coins}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      ${listing.price}
-                    </div>
                   </div>
                   <Button>View Details</Button>
                 </div>
