@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Coins, Heart, Menu, Package, Search, User } from "lucide-react";
+import { Coins, Heart, Menu, Search, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import sustainLogo from "@/assets/sustain-logo.jpg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +15,12 @@ export const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-dark">
-              <Package className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold text-foreground">Peer2Peer Eco</span>
+            <img 
+              src={sustainLogo} 
+              alt="Sustain Logo" 
+              className="h-10 w-10 rounded-lg object-cover"
+            />
+            <span className="text-xl font-bold text-foreground">Sustain</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
@@ -29,6 +32,9 @@ export const Navigation = () => {
             </Link>
             <Link to="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               About
+            </Link>
+            <Link to="/faq" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              FAQ
             </Link>
           </div>
 
@@ -67,6 +73,9 @@ export const Navigation = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/about">About</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/faq">FAQ</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/auth">Sign In</Link>
