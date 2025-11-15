@@ -109,7 +109,7 @@ const CreateListing = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label>Photos (minimum 3 required)</Label>
+                  <Label>Photos</Label>
                   <div className="grid grid-cols-3 gap-4">
                     {photos.map((photo, index) => (
                       <div key={index} className="relative h-32">
@@ -159,7 +159,7 @@ const CreateListing = () => {
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Upload 3-10 photos. First photo will be the cover image.
+                    Upload 1-10 photos. First photo will be the cover image.
                   </p>
                 </div>
 
