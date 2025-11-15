@@ -11,7 +11,7 @@ import { HelpCircle } from "lucide-react";
 
 const faqCategories = [
   {
-    category: "Getting Started",
+    category: "Getting Started...",
     questions: [
       {
         question: "What is Sustain?",
