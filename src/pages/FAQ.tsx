@@ -91,7 +91,7 @@ const faqCategories = [
     ]
   },
   {
-    category: "Shipping and Delivery",
+    category: "Shipping Product and Delivery",
     questions: [
       {
         question: "How does shipping work?",
