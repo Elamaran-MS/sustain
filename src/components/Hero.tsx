@@ -28,7 +28,7 @@ export const Hero = () => {
           </h1>
           
           <p className="mb-8 text-xl text-muted-foreground md:text-2xl">
-            Join the sustainable revolution. Resell your unused items, earn platform coins, and help reduce waste while building a circular economy.
+            Join the sustainable revolution. Resell your unused items, earn eco coins, and help reduce waste while building a circular economy.
           </p>
           
           <div className="flex flex-col gap-4 sm:flex-row">

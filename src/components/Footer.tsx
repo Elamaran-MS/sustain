@@ -1,5 +1,6 @@
-import { Facebook, Instagram, Leaf, Package, Twitter } from "lucide-react";
+import { Facebook, Instagram, Leaf, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
+import sustainLogo from "@/assets/sustain-logo.jpg";
 
 export const Footer = () => {
   return (
@@ -8,10 +9,12 @@ export const Footer = () => {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link to="/" className="mb-4 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-dark">
-                <Package className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-foreground">Peer2Peer Eco</span>
+              <img 
+                src={sustainLogo} 
+                alt="Sustain Logo" 
+                className="h-10 w-10 rounded-lg object-cover"
+              />
+              <span className="text-xl font-bold text-foreground">Sustain</span>
             </Link>
             <p className="mb-4 text-sm text-muted-foreground">
               Building a sustainable future, one transaction at a time.
@@ -111,7 +114,7 @@ export const Footer = () => {
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
           <p className="flex items-center justify-center gap-2">
             <Leaf className="h-4 w-4 text-primary" />
-            © 2024 Peer2Peer Eco. Building a sustainable future together.
+            © 2024 Sustain. Building a sustainable future together.
           </p>
         </div>
       </div>
